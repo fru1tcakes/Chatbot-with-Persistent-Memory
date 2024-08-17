@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Chat App</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #chat-container {
+            width: 98%;
+            max-width: 1200px;
+            height: 90vh;
+            background-color: #1f1f1f;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            max-width: 70%;
+            margin-bottom: 15px;
+            padding: 12px 18px;
+            border-radius: 20px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            font-size: 16px;
+        }
+
+        .user {
+            align-self: flex-end;
+            /* background-color: #4b7bec; */
+            background-color: #3a3a3a;
+            color: #ffffff;
+        }
+
+        .bot {
+            align-self: flex-start;
+            /* background-color: #26de81; */
+            background-color: #2c2c2c;
+            color: #ffffff;
+        }
+
+        #input-container {
+            display: flex;
+            padding: 15px;
+            background-color: #333333;
+            border-top: 1px solid #444444;
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            background-color: #444444;
+            color: #e0e0e0;
+            font-size: 16px;
+            outline: none;
+        }
+
+        #send-btn {
+            background-color: #4b7bec;
+            color: #ffffff;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #send-btn:hover {
+            background-color: #3867d6;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #333333;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4b7bec;
+            border-radius: 4px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            #chat-container {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            .message {
+                max-width: 85%;
+                font-size: 14px;
+            }
+
+            #send-btn {
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="chat-container">
+    <div id="messages"></div>
+    <div id="input-container">
+        <input type="text" id="user-input" placeholder="Type your message..." autofocus>
+        <button id="send-btn">Send</button>
+    </div>
+</div>
+
+<script>
+    const messagesDiv = document.getElementById('messages');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+
+    function sendMessage() {
+        const userMsg = userInput.value.trim();
+        if (userMsg) {
+            addMessage('user', userMsg);
+            userInput.value = '';
+            // fetch('http://127.0.0.1:5000/chat', { for local server
+            fetch('https://7e65-103-172-73-71.ngrok-free.app/chat', { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: userMsg })
+            })
+            .then(response => response.json())
+            .then(data => addMessage('bot', data.response))
+            .catch(error => addMessage('bot', 'Sorry, there was an error processing your request.'));
+        }
+    }
+
+    function addMessage(sender, text) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', sender);
+        messageDiv.textContent = text;
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto-scroll to the bottom
+    }
+</script>
+
+</body>
+</html>
