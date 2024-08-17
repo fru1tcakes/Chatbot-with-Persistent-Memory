@@ -12,6 +12,8 @@ The project consists of three key models that work together to create a chatbot 
 
 3. **Model 3**: This model uses the memory data provided by Model 2 to generate responses that require contextual information, ensuring continuity and coherence in interactions.
 
+![image](https://github.com/user-attachments/assets/01654595-0643-45b4-ac25-9df92449720f)
+
 
 ### Project Structure
 
