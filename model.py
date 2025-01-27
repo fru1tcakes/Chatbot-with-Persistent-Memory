@@ -2,7 +2,8 @@ import json
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
-
+import requests
+import re
 load_dotenv()
 
 api_key = os.getenv('OPENAI_API_KEY')
@@ -63,9 +64,7 @@ assistant = client.beta.assistants.create(
   model="gpt-4o-mini",
 )
 
-import requests
 
-import re
 def parse_llm_output(output):
     # Use regex to find the Description and Detail sections
     description_match = re.search(r'Description:\s*(.*?)\s*(?=Detail:|$)', output, re.DOTALL)
